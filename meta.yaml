@@ -1,0 +1,61 @@
+#
+# This is how to do the build (and some other useful commands)
+#
+# To build requires access to the conda-forge, pytorchm and anaconda channels
+# can be used with --debug flag
+# conda build . -c conda-forge -c anaconda
+#
+# After the pacckage has build, copy it in your local directory (subdirectory osx64, for example).
+# Then index it with this command (needs to be run for each subdirectory / architecture: noarch, linux-64, osx-64):
+# conda index /Users/mn/PycharmProjects/tst_channel
+#
+# Once it is indexed it can be installed from there (ideally into a new, empty virtual environment as follows)
+# conda list env
+# conda activate [your_env] or conda create --name my_new_env pip python=3.7
+# conda install -vv -c file://Users/mn/PycharmProjects/tst_channel/ pynrrd
+# conda list
+#
+# Here are also some descriptions on how to host a private conda repository (as used above)
+# https://stackoverflow.com/questions/35359147/how-can-i-host-my-own-private-conda-repository
+#
+# to upload to the cloud
+# anaconda login
+# anaconda upload --user uncbiag pynrrd-0.4.0-0.tar.bz2
+
+{% set name = "pynrrd" %}
+{% set version = "0.4.0" %}
+
+package:
+  name: '{{ name|lower }}'
+  version: '{{ version }}'
+
+source:
+  - git_url: https://github.com/mhe/pynrrd.git
+    git_rev: master
+    git_depth: 1
+
+requirements:
+  build:
+    - python ==3.7
+    - setuptools
+    - pip
+    - numpy >=1.17
+
+  run:
+    - numpy >=1.17
+
+test:
+  imports:
+    - nrrd
+
+about:
+  home: http://github.com/mhe/pynrrd
+  license: MIT License
+  summary: 'pynrrd is a python module to support reading and writing nrrd files.'
+
+extra:
+  recipe-maintainers:
+    - marcniethammer
+    - rkwitt
+    - hbgtjxzbbx
+
